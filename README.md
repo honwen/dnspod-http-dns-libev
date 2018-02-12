@@ -1,17 +1,12 @@
-# https-dns-proxy
+# dnspod-http-dns-libev
 
-https\_dns\_proxy is a light-weight DNS&lt;--&gt;HTTPS, non-caching proxy for
-Google's [DNS-over-HTTPS](https://developers.google.com/speed/public-dns/docs/dns-over-https)
-service.
+Modify from https://github.com/aarond10/https_dns_proxy
 
-Using DNS over HTTPS makes eavesdropping and spoofing of DNS traffic between you
-and the HTTPS DNS provider (Google) much less likely. This of course only makes
-sense if you trust Google as they're currently the only provider of such a
-service.
+To adopt to https://www.dnspod.cn/httpdns/guide
 
 Features:
 
-* Tiny Size (<30kiB).
+* Tiny Size (<35kiB).
 * Uses curl for HTTP/2 and pipelining, keeping resolve latencies extremely low.
 * Single-threaded, non-blocking select() server for use on resource-starved 
   embedded systems.
@@ -23,13 +18,12 @@ Features:
 Depends on `c-ares`, `libcurl`, `libev`.
 
 On Debian-derived systems those are libc-ares-dev,
-libcurl4-{openssl,nss,gnutls}-dev and libev-dev respectively.
+libcurl4-{openssl,nss,gnutls}-dev and libev-dev respectively.  
 On Redhat-derived systems those are c-ares-devel, libcurl-devel and
 libev-devel.
 
-```
-$ cmake .
-$ make
+```bash
+$ cmake . && make -j
 ```
 
 ## INSTALL
@@ -37,49 +31,22 @@ $ make
 There is no installer at this stage - just run it.
 
 ```
-# ./https_dns_proxy -u nobody -g nogroup -d
+# ./http-dns -u nobody -g nogroup -d
 ```
-
-### OpenWRT package install
-
-I maintain a package in the [OpenWRT packages](https://github.com/openwrt/packages) repository as well.
-You can install as follows:
-
-```
-root@OpenWrt:~# opkg update
-root@OpenWrt:~# opkg install https_dns_proxy
-root@OpenWrt:~# /etc/init.d/https_dns_proxy enable
-root@OpenWrt:~# /etc/init.d/https_dns_proxy start
-```
-
-Replace any 'list server' lines in `/etc/config/dhcp` with:
-
-`list server '127.0.0.1#5053'`
-
-You may also want to add the line:
-
-`noresolv '1'`
-
-This prevents dnsmasq from using /etc/resolv.conf DNS servers, leaving only our proxy server.
 
 ## Usage
 
 Just run it as a daemon and point traffic at it. Commandline flags are:
 
 ```
-Usage: https_dns_proxy [-a <listen_addr>] [-p <listen_port>]
-        [-e <subnet>] [-d] [-u <user>] [-g <group>] [-b <dns_servers>]
-        [-l <logfile>]
-
-  -a listen_addr    Local address to bind to. (127.0.0.1)
-  -p listen_port    Local port to bind to. (5053)
+Usage: ./http-dns [-a <listen_addr>] [-p <listen_port>]
+        [-e <subnet>] [-d] [-u <user>] [-g <group>] [-l <logfile>]
+  -a listen_addr    Local address to bind to. (0.0.0.0)
+  -p listen_port    Local port to bind to. (5353)
   -e subnet_addr    An edns-client-subnet to use such as "203.31.0.0/16". ()
   -d                Daemonize.
   -u user           User to drop to launched as root. (nobody)
   -g group          Group to drop to launched as root. (nobody)
-  -b dns_servers    Comma separated IPv4 address of DNS servers
-                    to resolve dns.google.com. (8.8.8.8,8.8.4.4,145.100.185.15,
-                    145.100.185.16,185.49.141.37,199.58.81.218,80.67.188.188)
   -t proxy_server   Optional HTTP proxy. e.g. socks5://127.0.0.1:1080
                     Remote name resolution will be used if the protocol
                     supports it (http, https, socks4a, socks5h), otherwise
@@ -89,13 +56,14 @@ Usage: https_dns_proxy [-a <listen_addr>] [-p <listen_port>]
   -x                Use HTTP/1.1 instead of HTTP/2. Useful with broken
                     or limited builds of libcurl (false).
   -v                Increase logging verbosity. (INFO)
+  -h                Show Usage and Exit.
 ```
 
 ## TODO
 
 * Test coverage could be better.
-* Load tests (that don't tax Google's infrastructure) would be nice.
 
 ## AUTHORS
 
 * Aaron Drew (aarond10@gmail.com)
+* chenhw2 (https://github.com/chenhw2)

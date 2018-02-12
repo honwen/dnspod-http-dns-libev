@@ -1,4 +1,4 @@
-project(HttpsDnsProxy)
+project(dnspod-http-dns-libev)
 cmake_minimum_required(VERSION 2.8)
 
 set(CMAKE_BUILD_TYPE "Debug")
@@ -26,7 +26,7 @@ else()
 endif()
 
 # The main binary
-set(TARGET_NAME "https_dns_proxy")
+set(TARGET_NAME "http-dns")
 aux_source_directory(src SRC_LIST)
 set(SRC_LIST ${SRC_LIST})
 add_executable(${TARGET_NAME} ${SRC_LIST})

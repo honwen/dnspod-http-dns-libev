@@ -14,8 +14,8 @@
 #include "options.h"
 
 void options_init(struct Options *opt) {
-  opt->listen_addr = "127.0.0.1";
-  opt->listen_port = 5053;
+  opt->listen_addr = "0.0.0.0";
+  opt->listen_port = 5353;
   opt->edns_client_subnet = "";
   opt->logfile = "-";
   opt->logfd = -1;
@@ -33,7 +33,7 @@ void options_init(struct Options *opt) {
 
 int options_parse_args(struct Options *opt, int argc, char **argv) {
   int c;
-  while ((c = getopt(argc, argv, "a:p:e:du:g:b:t:l:vx")) != -1) {
+  while ((c = getopt(argc, argv, "a:p:e:du:g:t:l:vxh")) != -1) {
     switch (c) {
     case 'a': // listen_addr
       opt->listen_addr = optarg;
@@ -68,6 +68,8 @@ int options_parse_args(struct Options *opt, int argc, char **argv) {
     case 'x': // http/1.1
       opt->use_http_1_1 = 1;
       break;
+    case 'h':
+      return -1;
     case '?':
       printf("Unknown option '-%c'", c);
       return -1;
@@ -104,8 +106,7 @@ void options_show_usage(int argc, char **argv) {
   struct Options defaults;
   options_init(&defaults);
   printf("Usage: %s [-a <listen_addr>] [-p <listen_port>]\n", argv[0]);
-  printf("        [-e <subnet>] [-d] [-u <user>] [-g <group>] [-b <dns_servers>]\n");
-  printf("        [-l <logfile>]\n\n");
+  printf("        [-e <subnet>] [-d] [-u <user>] [-g <group>] [-l <logfile>]\n");
   printf("  -a listen_addr    Local address to bind to. (%s)\n",
          defaults.listen_addr);
   printf("  -p listen_port    Local port to bind to. (%d)\n",
@@ -118,9 +119,6 @@ void options_show_usage(int argc, char **argv) {
          defaults.user);
   printf("  -g group          Group to drop to launched as root. (%s)\n",
          defaults.group);
-  printf("  -b dns_servers    Comma separated IPv4 address of DNS servers\n");
-  printf("                    to resolve dns.google.com. (%s)\n",
-         defaults.bootstrap_dns);
   printf("  -t proxy_server   Optional HTTP proxy. e.g. socks5://127.0.0.1:1080\n");
   printf("                    Remote name resolution will be used if the protocol\n");
   printf("                    supports it (http, https, socks4a, socks5h), otherwise\n");
@@ -131,6 +129,7 @@ void options_show_usage(int argc, char **argv) {
   printf("  -x                Use HTTP/1.1 instead of HTTP/2. Useful with broken\n"
          "                    or limited builds of libcurl (false).\n");
   printf("  -v                Increase logging verbosity. (INFO)\n");
+  printf("  -h                Show Usage and Exit.\n");
   options_cleanup(&defaults);
 }
 
