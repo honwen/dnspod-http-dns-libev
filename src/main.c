@@ -24,7 +24,6 @@
 #include <time.h>
 #include <unistd.h>
 
-#include "dns_poller.h"
 #include "dns_server.h"
 #include "https_client.h"
 #include "json_to_dns.h"
@@ -187,8 +186,6 @@ int main(int argc, char *argv[]) {
   ev_signal_start(loop, &sigint);
 
   logging_flush_init(loop);
-
-  dns_poller_t dns_poller;
 
   ev_run(loop, 0);
 

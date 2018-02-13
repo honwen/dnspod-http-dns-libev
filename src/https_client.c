@@ -63,11 +63,11 @@ static void https_fetch_ctx_init(https_client_t *client,
   curl_easy_setopt(ctx->curl, CURLOPT_WRITEFUNCTION, &write_buffer);
   curl_easy_setopt(ctx->curl, CURLOPT_WRITEDATA, ctx);
   curl_easy_setopt(ctx->curl, CURLOPT_TCP_KEEPALIVE, 5L);
-  curl_easy_setopt(ctx->curl, CURLOPT_USERAGENT, "dns-to-https-proxy/0.2");
+  // curl_easy_setopt(ctx->curl, CURLOPT_USERAGENT, "dns-to-https-proxy/0.2");
   curl_easy_setopt(ctx->curl, CURLOPT_NOSIGNAL, 0);
   curl_easy_setopt(ctx->curl, CURLOPT_TIMEOUT, 2 /* seconds */);
-  // We know Google supports this, so force it.
-  curl_easy_setopt(ctx->curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+  curl_easy_setopt(ctx->curl, CURLOPT_SERVER_RESPONSE_TIMEOUT, 2 /* seconds */);
+
   if (client->opt->curl_proxy) {
     DLOG("Using curl proxy: %s", client->opt->curl_proxy);
     if ((res = curl_easy_setopt(ctx->curl, CURLOPT_PROXY,
